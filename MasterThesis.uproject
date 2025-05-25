@@ -119,6 +119,10 @@
 		{
 			"Name": "Soundscape",
 			"Enabled": true
+		},
+		{
+			"Name" : "SoundHolder",
+			"Enabled" : true
 		}
 	]
 }

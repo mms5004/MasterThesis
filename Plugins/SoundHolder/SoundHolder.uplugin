@@ -1,0 +1,29 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "1.0",
+  "Modules": [
+    {
+      "Name": "SoundHolder",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    },
+    {
+      "Name": "SoundHolderEditor",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "FriendlyName": "SoundHolder",
+  "Description": "",
+  "Category": "Other",
+  "CreatedBy": "Miguel Martins",
+  "CreatedByURL": "https://mms5004.itch.io/",
+  "DocsURL": "",
+  "MarketplaceURL": "",
+  "SupportURL": "",
+  "CanContainContent": "true",
+  "Installed": false,
+  "IsBetaVersion": false,
+  "Plugins": []
+}
