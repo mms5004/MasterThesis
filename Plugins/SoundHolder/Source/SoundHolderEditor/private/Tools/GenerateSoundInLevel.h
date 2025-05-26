@@ -2,11 +2,13 @@
 
 #pragma once
 
+#include "EUW_SoundGeneration.h"
+#include "Components/PrimitiveComponent.h"
+
 #include "CoreMinimal.h"
 #include "InteractiveToolBuilder.h"
 #include "BaseTools/ClickDragTool.h"
 #include "GenerateSoundInLevel.generated.h"
-
 
 /**
  * Builder for UGenerateSoundInLevel
@@ -39,7 +41,7 @@ public:
 
 	/** Selected class in editor */
 	UPROPERTY(EditAnywhere, Category = Options)
-	FString ClassSelected;
+	FString Suffix;
 };
 
 

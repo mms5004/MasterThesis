@@ -17,8 +17,7 @@
 #include "Editor/Blutility/Classes/EditorUtilityWidget.h"
 #include "Editor/Blutility/Classes/EditorUtilityWidgetBlueprint.h"
 #include "Framework/Application/SlateApplication.h"
-#include "EUW_SoundGeneration.h"
-#include "Components/PrimitiveComponent.h"
+
 
 // localization namespace
 #define LOCTEXT_NAMESPACE "GenerateSoundInLevel"
@@ -43,6 +42,8 @@ UGenerateSoundInLevelProperties::UGenerateSoundInLevelProperties()
 
 void UGenerateSoundInLevel::SetupWidgetBlueprint()
 {
+	if (WidgetInstance)	{return;}
+
 	// initialize widget utility  //UE_LOG(LogTemp, Warning, TEXT("Setup?"))
 	FSoftObjectPath WidgetPath;	WidgetPath.SetPath("/SoundHolder/Tools/EUW_SoundGeneration.EUW_SoundGeneration_C");
 
@@ -56,8 +57,8 @@ void UGenerateSoundInLevel::SetupWidgetBlueprint()
 		//}
 		if (UWorld* World = GEditor->GetEditorWorldContext().World())
 		{
-			UEUW_SoundGeneration* widget = CreateWidget<UEUW_SoundGeneration>(World, WidgetClass);
-			if (widget)
+			WidgetInstance = CreateWidget<UEUW_SoundGeneration>(World, WidgetClass);
+			if (WidgetInstance)
 			{
 				TSharedRef<SWindow> WidgetWindow = SNew(SWindow)
 					.Title(FText::FromString("Sound Tool"))
@@ -65,7 +66,7 @@ void UGenerateSoundInLevel::SetupWidgetBlueprint()
 					.SupportsMinimize(true)
 					.SupportsMaximize(false);
 
-				TSharedRef<SWidget> SlateWidget = widget->TakeWidget();
+				TSharedRef<SWidget> SlateWidget = WidgetInstance->TakeWidget();
 
 				WidgetWindow->SetContent(SlateWidget);
 
@@ -73,7 +74,7 @@ void UGenerateSoundInLevel::SetupWidgetBlueprint()
 
 				if (IsValid(ComponentHit))
 				{
-					widget(ComponentHit);
+					WidgetInstance->SetupParameters(Properties->Suffix, ComponentHit);
 
 				}
 			}
