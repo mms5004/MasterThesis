@@ -28,7 +28,10 @@ public class SoundHolderEditor: ModuleRules
             "UnrealEd",
             "LevelEditor",
             "InteractiveToolsFramework",
-            "EditorInteractiveToolsFramework"
+            "EditorInteractiveToolsFramework",
+            "UMGEditor",
+            "UMG",
+            "Blutility"
         }
         );
     }

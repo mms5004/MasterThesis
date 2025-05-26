@@ -33,26 +33,16 @@ class SOUNDHOLDEREDITOR_API UGenerateSoundInLevelProperties : public UInteractiv
 public:
 	UGenerateSoundInLevelProperties();
 
-	/** First point of measurement */
+	/** Selected coordonates */
 	UPROPERTY(EditAnywhere, Category = Options)
-	FVector StartPoint;
+	FVector SelectionCoordonate;
 
-	/** Second point of measurement */
+	/** Selected class in editor */
 	UPROPERTY(EditAnywhere, Category = Options)
-	FVector EndPoint;
-	
-	/** Current distance measurement */
-	UPROPERTY(EditAnywhere, Category = Options)
-	double Distance;
+	FString ClassSelected;
 };
 
 
-
-/**
- * UEditorModeInteractiveTool is an example Tool that allows the user to measure the 
- * distance between two points. The first point is set by click-dragging the mouse, and
- * the second point is set by shift-click-dragging the mouse.
- */
 UCLASS()
 class SOUNDHOLDEREDITOR_API UGenerateSoundInLevel : public UInteractiveTool, public IClickDragBehaviorTarget
 {
@@ -90,8 +80,9 @@ protected:
 	static const int MoveSecondPointModifierID = 1;		// identifier we associate with the shift key
 	bool bSecondPointModifierDown = false;				// flag we use to keep track of modifier state
 	bool bMoveSecondPoint = false;						// flag we use to keep track of which point we are moving during a press-drag
+	//Custom Utility Widget Cpp class * 
 
 	FInputRayHit FindRayHit(const FRay& WorldRay, FVector& HitPos);		// raycasts into World
 	void UpdatePosition(const FRay& WorldRay);					// updates first or second point based on raycast
-	void UpdateDistance();										// updates distance
+	void SetupWidgetBlueprint();
 };

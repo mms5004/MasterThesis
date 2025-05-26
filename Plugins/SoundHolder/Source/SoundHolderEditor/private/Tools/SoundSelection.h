@@ -6,13 +6,13 @@
 #include "UObject/NoExportTypes.h"
 #include "InteractiveToolBuilder.h"
 #include "BaseTools/SingleClickTool.h"
-#include "ShowGizmo.generated.h"
+#include "SoundSelection.generated.h"
 
 /**
  * Builder for UShowGizmo
  */
 UCLASS()
-class SOUNDHOLDEREDITOR_API UShowGizmoBuilder : public UInteractiveToolBuilder
+class SOUNDHOLDEREDITOR_API USoundSelectionBuilder : public UInteractiveToolBuilder
 {
 	GENERATED_BODY()
 
@@ -28,11 +28,11 @@ public:
  * which provides an OnModified delegate that the Tool will listen to for changes in property values.
  */
 UCLASS(Transient)
-class SOUNDHOLDEREDITOR_API UShowGizmoProperties : public UInteractiveToolPropertySet
+class SOUNDHOLDEREDITOR_API USoundSelectionProperties : public UInteractiveToolPropertySet
 {
 	GENERATED_BODY()
 public:
-	UShowGizmoProperties();
+	USoundSelectionProperties();
 
 	/** If enabled, dialog should display extended information about the actor clicked on. Otherwise, only basic info will be shown. */
 	UPROPERTY(EditAnywhere, Category = Options, meta = (DisplayName = "Show Extended Info"))
@@ -47,12 +47,12 @@ public:
  * clicks left mouse button. All the action is in the ::OnClicked handler.
  */
 UCLASS()
-class SOUNDHOLDEREDITOR_API UShowGizmo : public USingleClickTool
+class SOUNDHOLDEREDITOR_API USoundSelection : public USingleClickTool
 {
 	GENERATED_BODY()
 
 public:
-	UShowGizmo();
+	USoundSelection();
 
 	virtual void SetWorld(UWorld* World);
 
@@ -63,7 +63,7 @@ public:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<UShowGizmoProperties> Properties;
+	TObjectPtr<USoundSelectionProperties> Properties;
 
 
 protected:

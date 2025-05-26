@@ -11,6 +11,13 @@
 
 #include "SceneManagement.h"
 
+//Editor Utility Widget
+#include "Editor.h"
+#include "Editor/Blutility/Public/EditorUtilitySubsystem.h"
+#include "Editor/Blutility/Classes/EditorUtilityWidget.h"
+#include "Editor/Blutility/Classes/EditorUtilityWidgetBlueprint.h"
+#include "Framework/Application/SlateApplication.h"
+
 // localization namespace
 #define LOCTEXT_NAMESPACE "GenerateSoundInLevel"
 
@@ -29,11 +36,49 @@ UInteractiveTool* UGenerateSoundInLevelBuilder::BuildTool(const FToolBuilderStat
 UGenerateSoundInLevelProperties::UGenerateSoundInLevelProperties()
 {
 	// initialize the points and distance to reasonable values
-	StartPoint = FVector(0,0,0);
-	EndPoint = FVector(0,0,100);
-	Distance = 100;
+	SelectionCoordonate = FVector(0,0,0);
 }
 
+void UGenerateSoundInLevel::SetupWidgetBlueprint()
+{
+	// initialize widget utility  //UE_LOG(LogTemp, Warning, TEXT("Setup?"))
+	FSoftObjectPath WidgetPath;	WidgetPath.SetPath("/SoundHolder/Tools/EUW_SoundGeneration.EUW_SoundGeneration_C");
+
+	//UEditorUtilityWidgetBlueprint* WidgetBP = Cast<UEditorUtilityWidgetBlueprint>(StaticLoadObject(UEditorUtilityWidgetBlueprint::StaticClass(), nullptr, *WidgetPath.ToString()));
+	UClass* WidgetBP = Cast<UClass>(StaticLoadObject(UClass::StaticClass(), nullptr, *WidgetPath.ToString()));
+	if (WidgetBP && GEditor)
+	{
+		if (UEditorUtilitySubsystem* EditorUtilitySubsystem = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>())
+		{
+			//EditorUtilitySubsystem->SpawnAndRegisterTab(WidgetBP);
+			if (UWorld* World = GEditor->GetEditorWorldContext().World())
+			{
+				UEditorUtilityWidget* widget = CreateWidget<UEditorUtilityWidget>(World, WidgetBP);
+				if (widget)
+				{
+					TSharedRef<SWindow> WidgetWindow = SNew(SWindow)
+						.Title(FText::FromString("Sound Tool"))
+						.ClientSize(FVector2D(500, 400))
+						.SupportsMinimize(true)
+						.SupportsMaximize(false);
+
+					TSharedRef<SWidget> SlateWidget = widget->TakeWidget();
+
+					WidgetWindow->SetContent(SlateWidget);
+
+					FSlateApplication::Get().AddWindow(WidgetWindow);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("widget is dead ! "))
+				}
+			}
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Utility renamed/moved or deleted ! "))
+	}
+}
 
 void UGenerateSoundInLevel::SetWorld(UWorld* World)
 {
@@ -55,11 +100,13 @@ void UGenerateSoundInLevel::Setup()
 	AddInputBehavior(MouseBehavior);
 
 	// Create the property set and register it with the Tool
-	Properties = NewObject<UGenerateSoundInLevelProperties>(this, "Measurement");
+	Properties = NewObject<UGenerateSoundInLevelProperties>(this, "Sound Generation");
 	AddToolPropertySource(Properties);
 	
 	bSecondPointModifierDown = false;
 	bMoveSecondPoint = false;
+
+	SetupWidgetBlueprint();
 }
 
 
@@ -113,24 +160,18 @@ FInputRayHit UGenerateSoundInLevel::FindRayHit(const FRay& WorldRay, FVector& Hi
 
 void UGenerateSoundInLevel::UpdatePosition(const FRay& WorldRay)
 {
-	FInputRayHit HitResult = FindRayHit(WorldRay, (bMoveSecondPoint) ? Properties->EndPoint : Properties->StartPoint);
+	FInputRayHit HitResult = FindRayHit(WorldRay, Properties->SelectionCoordonate);
 	if (HitResult.bHit)
 	{
-		UpdateDistance();
+
 	}
 }
 
-
-void UGenerateSoundInLevel::UpdateDistance()
-{
-	Properties->Distance = FVector::Distance(Properties->StartPoint, Properties->EndPoint);
-}
 
 
 void UGenerateSoundInLevel::OnPropertyModified(UObject* PropertySet, FProperty* Property)
 {
 	// if the user updated any of the property fields, update the distance
-	UpdateDistance();
 }
 
 
@@ -138,11 +179,13 @@ void UGenerateSoundInLevel::Render(IToolsContextRenderAPI* RenderAPI)
 {
 	FPrimitiveDrawInterface* PDI = RenderAPI->GetPrimitiveDrawInterface();
 	// draw a thin line that shows through objects
+	/*
 	PDI->DrawLine(Properties->StartPoint, Properties->EndPoint,
 		FColor(240, 16, 16), SDPG_Foreground, 2.0f, 0.0f, true);
 	// draw a thicker line that is depth-tested
 	PDI->DrawLine(Properties->StartPoint, Properties->EndPoint,
 		FColor(240, 16, 16), SDPG_World, 4.0f, 0.0f, true);
+	*/
 }
 
 

@@ -1,21 +1,21 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "ShowGizmo.h"
+#include "SoundSelection.h"
 #include "InteractiveToolManager.h"
 #include "ToolBuilderUtil.h"
 #include "CollisionQueryParams.h"
 #include "Engine/World.h"
 
 // localization namespace
-#define LOCTEXT_NAMESPACE "ShowGizmoBuilder"
+#define LOCTEXT_NAMESPACE "SoundSelectionr"
 
 /*
  * ToolBuilder implementation
  */
 
-UInteractiveTool* UShowGizmoBuilder::BuildTool(const FToolBuilderState& SceneState) const
+UInteractiveTool* USoundSelectionBuilder::BuildTool(const FToolBuilderState& SceneState) const
 {
-	UShowGizmo* NewTool = NewObject<UShowGizmo>(SceneState.ToolManager);
+	USoundSelection* NewTool = NewObject<USoundSelection>(SceneState.ToolManager);
 	NewTool->SetWorld(SceneState.World);
 	return NewTool;
 }
@@ -25,7 +25,7 @@ UInteractiveTool* UShowGizmoBuilder::BuildTool(const FToolBuilderState& SceneSta
  * ToolProperties implementation
  */
 
-UShowGizmoProperties::UShowGizmoProperties()
+USoundSelectionProperties::USoundSelectionProperties()
 {
 	ShowExtendedInfo = true;
 }
@@ -35,27 +35,27 @@ UShowGizmoProperties::UShowGizmoProperties()
  * Tool implementation
  */
 
-UShowGizmo::UShowGizmo()
+USoundSelection::USoundSelection()
 {
 }
 
 
-void UShowGizmo::SetWorld(UWorld* World)
+void USoundSelection::SetWorld(UWorld* World)
 {
 	this->TargetWorld = World;
 }
 
 
-void UShowGizmo::Setup()
+void USoundSelection::Setup()
 {
 	USingleClickTool::Setup();
 
-	Properties = NewObject<UShowGizmoProperties>(this);
+	Properties = NewObject<USoundSelectionProperties>(this);
 	AddToolPropertySource(Properties);
 }
 
 
-void UShowGizmo::OnClicked(const FInputDeviceRay& ClickPos)
+void USoundSelection::OnClicked(const FInputDeviceRay& ClickPos)
 {
 	// we will create actor at this position
 	FVector NewActorPos = FVector::ZeroVector;
@@ -73,8 +73,8 @@ void UShowGizmo::OnClicked(const FInputDeviceRay& ClickPos)
 
 			if (Properties->ShowExtendedInfo)
 			{
-				ActorInfoMsg = FText::Format(LOCTEXT("ExtendedActorInfo", "Name: {0}\nClass: {1}"), 
-					FText::FromString(ClickedActor->GetName()), 
+				ActorInfoMsg = FText::Format(LOCTEXT("ExtendedActorInfo", "Name: {0}\nClass: {1}"),
+					FText::FromString(ClickedActor->GetName()),
 					FText::FromString(ClickedActor->GetClass()->GetName())
 				);
 			}
