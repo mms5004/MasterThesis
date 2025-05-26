@@ -84,5 +84,9 @@ protected:
 
 	FInputRayHit FindRayHit(const FRay& WorldRay, FVector& HitPos);		// raycasts into World
 	void UpdatePosition(const FRay& WorldRay);					// updates first or second point based on raycast
+
 	void SetupWidgetBlueprint();
+	UEUW_SoundGeneration* WidgetInstance = nullptr; //	Widget Reference
+	UObject* SelectedObject = nullptr;
+	UPrimitiveComponent* ComponentHit = nullptr;
 };

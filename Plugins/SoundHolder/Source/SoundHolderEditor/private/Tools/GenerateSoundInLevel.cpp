@@ -17,6 +17,8 @@
 #include "Editor/Blutility/Classes/EditorUtilityWidget.h"
 #include "Editor/Blutility/Classes/EditorUtilityWidgetBlueprint.h"
 #include "Framework/Application/SlateApplication.h"
+#include "EUW_SoundGeneration.h"
+#include "Components/PrimitiveComponent.h"
 
 // localization namespace
 #define LOCTEXT_NAMESPACE "GenerateSoundInLevel"
@@ -44,34 +46,40 @@ void UGenerateSoundInLevel::SetupWidgetBlueprint()
 	// initialize widget utility  //UE_LOG(LogTemp, Warning, TEXT("Setup?"))
 	FSoftObjectPath WidgetPath;	WidgetPath.SetPath("/SoundHolder/Tools/EUW_SoundGeneration.EUW_SoundGeneration_C");
 
-	//UEditorUtilityWidgetBlueprint* WidgetBP = Cast<UEditorUtilityWidgetBlueprint>(StaticLoadObject(UEditorUtilityWidgetBlueprint::StaticClass(), nullptr, *WidgetPath.ToString()));
-	UClass* WidgetBP = Cast<UClass>(StaticLoadObject(UClass::StaticClass(), nullptr, *WidgetPath.ToString()));
-	if (WidgetBP && GEditor)
+	//UEditorUtilityWidgetBlueprint* WidgetBP = Cast<UEditorUtilityWidgetBlueprint>(StaticLoadObject(UEditorUtilityWidgetBlueprint::StaticClass(), nullptr, *WidgetPath.ToString())); //Removing the _C to load blueprint
+	UClass* WidgetClass = Cast<UClass>(StaticLoadObject(UClass::StaticClass(), nullptr, *WidgetPath.ToString()));
+	if (WidgetClass && GEditor)
 	{
-		if (UEditorUtilitySubsystem* EditorUtilitySubsystem = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>())
+		//if (UEditorUtilitySubsystem* EditorUtilitySubsystem = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>())
+		//{
+		//	EditorUtilitySubsystem->SpawnAndRegisterTab(WidgetBP);
+		//}
+		if (UWorld* World = GEditor->GetEditorWorldContext().World())
 		{
-			//EditorUtilitySubsystem->SpawnAndRegisterTab(WidgetBP);
-			if (UWorld* World = GEditor->GetEditorWorldContext().World())
+			UEUW_SoundGeneration* widget = CreateWidget<UEUW_SoundGeneration>(World, WidgetClass);
+			if (widget)
 			{
-				UEditorUtilityWidget* widget = CreateWidget<UEditorUtilityWidget>(World, WidgetBP);
-				if (widget)
+				TSharedRef<SWindow> WidgetWindow = SNew(SWindow)
+					.Title(FText::FromString("Sound Tool"))
+					.ClientSize(FVector2D(500, 400))
+					.SupportsMinimize(true)
+					.SupportsMaximize(false);
+
+				TSharedRef<SWidget> SlateWidget = widget->TakeWidget();
+
+				WidgetWindow->SetContent(SlateWidget);
+
+				FSlateApplication::Get().AddWindow(WidgetWindow);
+
+				if (IsValid(ComponentHit))
 				{
-					TSharedRef<SWindow> WidgetWindow = SNew(SWindow)
-						.Title(FText::FromString("Sound Tool"))
-						.ClientSize(FVector2D(500, 400))
-						.SupportsMinimize(true)
-						.SupportsMaximize(false);
+					widget(ComponentHit);
 
-					TSharedRef<SWidget> SlateWidget = widget->TakeWidget();
-
-					WidgetWindow->SetContent(SlateWidget);
-
-					FSlateApplication::Get().AddWindow(WidgetWindow);
 				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("widget is dead ! "))
-				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("widget error ! "))
 			}
 		}
 	}
@@ -151,7 +159,8 @@ FInputRayHit UGenerateSoundInLevel::FindRayHit(const FRay& WorldRay, FVector& Hi
 	bool bHitWorld = TargetWorld->LineTraceSingleByObjectType(Result, WorldRay.Origin, WorldRay.PointAt(999999), QueryParams);
 	if (bHitWorld)
 	{
-		HitPos = Result.ImpactPoint;
+		ComponentHit = Result.GetComponent();
+		HitPos = Result.ImpactPoint; 
 		return FInputRayHit(Result.Distance);
 	}
 	return FInputRayHit();
@@ -163,7 +172,7 @@ void UGenerateSoundInLevel::UpdatePosition(const FRay& WorldRay)
 	FInputRayHit HitResult = FindRayHit(WorldRay, Properties->SelectionCoordonate);
 	if (HitResult.bHit)
 	{
-
+		//SelectedObject = HitResult.HitOwner;// .HitObject;
 	}
 }
 
