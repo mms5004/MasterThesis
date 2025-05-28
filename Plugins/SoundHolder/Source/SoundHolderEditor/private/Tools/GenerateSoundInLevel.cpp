@@ -161,6 +161,11 @@ FInputRayHit UGenerateSoundInLevel::FindRayHit(const FRay& WorldRay, FVector& Hi
 	if (bHitWorld)
 	{
 		ComponentHit = Result.GetComponent();
+		if (IsValid(WidgetInstance))
+		{
+			WidgetInstance->SetupParameters(Properties->Suffix, ComponentHit);
+
+		}
 		HitPos = Result.ImpactPoint; 
 		return FInputRayHit(Result.Distance);
 	}
