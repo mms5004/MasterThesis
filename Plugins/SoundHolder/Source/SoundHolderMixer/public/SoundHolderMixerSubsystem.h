@@ -7,6 +7,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "InstancedStruct.h"
 #include "AlphaMixerActor.h"
+#include "MixerParameterCollection.h"
 #include "SoundHolderMixerSubsystem.generated.h"
 
 /**
@@ -21,12 +22,33 @@ public:
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
     virtual void Deinitialize() override;
     
+    //////////////////////////////////////////////////////
+    //Virtual Mixer Table Actor
+    //////////////////////////////////////////////////////
+
     UFUNCTION(BlueprintCallable, Category = "SoundHolderMixer")
     void OverrideMixerActor(UClass* Class, bool DeleteOlderMixer);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    AAlphaMixerActor* MixerActor;
+
+    //////////////////////////////////////////////////////
+    // Mixer Parameters Collection
+    //////////////////////////////////////////////////////
+
+    UFUNCTION(BlueprintCallable, Category = "SoundHolderMixer")
+    void OverrideMixerParameterCollection(UMixerParameterCollection* NewCollection);
+
+    UPROPERTY() // RTPC-like variables
+    TObjectPtr<UMixerParameterCollection> MixerParameterCollection;
     
-    UPROPERTY(BlueprintReadWrite, EditAnywhere) // RTPC-like variables
+    UPROPERTY(BlueprintReadWrite, EditAnywhere) //References ? Could be deleted I guess
     TMap<FString, float> Alphas;
-    
+
+    //////////////////////////////////////////////////////
+    // Get/Set Mixer Values
+    //////////////////////////////////////////////////////
+
     UFUNCTION(BlueprintCallable, Category = "SoundHolderMixer") // Setter
     void SetAlphaInput(FString Key, FInstancedStruct Value);
 
@@ -39,9 +61,12 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "SoundHolderMixer")
     FOnAlphahanged OnAlphaChanged;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    AAlphaMixerActor* MixerActor;
+    //////////////////////////////////////////////////////
+    // Update and setup
+    //////////////////////////////////////////////////////
 
-protected: 
+private: 
     void InstantiateMixerActor(UClass* Class);
+
+    void UpdateMixerParameter(FString Name, float NewValue);
 };
