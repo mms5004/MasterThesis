@@ -12,6 +12,11 @@
       "Name": "SoundHolderEditor",
       "Type": "Editor",
       "LoadingPhase": "Default"
+    },
+    {
+      "Name": "SoundHolderMixer",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
     }
   ],
   "FriendlyName": "SoundHolder",
