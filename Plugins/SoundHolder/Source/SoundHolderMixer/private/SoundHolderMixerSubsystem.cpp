@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SoundHolderMixerSubsystem.h"
-#include "AlphaInputStruct.h"
 
 
 void USoundHolderMixerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -25,9 +24,14 @@ void USoundHolderMixerSubsystem::OverrideMixerActor(UClass* Class, bool DeleteOl
     InstantiateMixerActor(Class);
 }
 
-void USoundHolderMixerSubsystem::SetAlphaInput(FName Key, FInstancedStruct Value)
+void USoundHolderMixerSubsystem::SetAlphaInput(FString Key, FInstancedStruct Value)
 {
     float* Found = Alphas.Find(Key); //Detect if key already exist
+
+    if (!Value.IsValid() || Key == "") //If empty call are made
+    {
+        return;
+    }
 
     if (const FMixerFloat* FloatChecker = Value.GetPtr<FMixerFloat>()) // Check if FInstancedStruct is a float
     {
@@ -46,7 +50,7 @@ void USoundHolderMixerSubsystem::SetAlphaInput(FName Key, FInstancedStruct Value
 
 }
 
-float USoundHolderMixerSubsystem::GetAlpha(FName Key) const
+float USoundHolderMixerSubsystem::GetAlpha(FString Key) const
 {
     const float* Value = Alphas.Find(Key);
     return Value ? *Value : 0.0f;
@@ -56,13 +60,13 @@ void USoundHolderMixerSubsystem::InstantiateMixerActor(UClass* Class)
 {
     if (!Class) {return;}
     UWorld* World = GetWorld();
-    if (World && !MixerActor)
+    if (World)
     {
         //MixerActor = World->SpawnActor<AAlphaMixerActor>();
         FActorSpawnParameters Params;
         Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
         Params.ObjectFlags = RF_Transient;
 
-        MixerActor = World->SpawnActor<AAlphaMixerActor>(AAlphaMixerActor::StaticClass(), Params);
+        MixerActor = World->SpawnActor<AAlphaMixerActor>(Class, Params);
     }
 }

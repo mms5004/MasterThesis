@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AlphaInputStruct.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "InstancedStruct.h"
 #include "AlphaMixerActor.h"
@@ -23,19 +24,18 @@ public:
     UFUNCTION(BlueprintCallable, Category = "SoundHolderMixer")
     void OverrideMixerActor(UClass* Class, bool DeleteOlderMixer);
     
-    UPROPERTY() // RTPC-like variables
-    TMap<FName, float> Alphas;
-
+    UPROPERTY(BlueprintReadWrite, EditAnywhere) // RTPC-like variables
+    TMap<FString, float> Alphas;
     
     UFUNCTION(BlueprintCallable, Category = "SoundHolderMixer") // Setter
-    void SetAlphaInput(FName Key, FInstancedStruct Value);
+    void SetAlphaInput(FString Key, FInstancedStruct Value);
 
     
     UFUNCTION(BlueprintPure, Category = "SoundHolderMixer") // Getter
-    float GetAlpha(FName Key) const;
+    float GetAlpha(FString Key) const;
 
     // transfer variable in an AI blackboard style
-    DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAlphahanged, FName, AlphaName, float, Alpha);
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAlphahanged, FString, AlphaName, float, Alpha);
     UPROPERTY(BlueprintAssignable, Category = "SoundHolderMixer")
     FOnAlphahanged OnAlphaChanged;
 

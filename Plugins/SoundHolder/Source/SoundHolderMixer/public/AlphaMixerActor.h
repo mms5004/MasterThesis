@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InstancedStruct.h"
 #include "GameFramework/Actor.h"
-
 #include "AlphaMixerActor.generated.h"
 
 class USoundHolderMixerSubsystem;
@@ -19,20 +19,23 @@ public:
 
 	//Separation of alpha update and input update 
 	UFUNCTION()
-	void OnAlphaUpdated(FName AlphaName, float AlphaValue);
+	void OnAlphaUpdated(FString AlphaName, float AlphaValue);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "SoundHolderMixer")
-	void EvaluateMixingLogic(FName InputName, FInstancedStruct InputValue);
+	void EvaluateMixingLogic(FString InputName, FInstancedStruct InputValue);
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(EditAnywhere, Category = "SoundHolderMixer")
-	TArray<FName> AlphaInputs;
+	TArray<FString> AlphaInputs;
 
 	UPROPERTY(BlueprintReadOnly, Category = "SoundHolderMixer")
-	TMap<FName, float> AlphaOutput;
+	TMap<FString, float> AlphaOutput;
+
+	UPROPERTY(BlueprintReadOnly, Category = "SoundHolderMixer")
+	TArray<FString> InputNames;
 
 private:
 	USoundHolderMixerSubsystem* SoundHolderSubsystem;

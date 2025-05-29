@@ -30,5 +30,10 @@
   "CanContainContent": "true",
   "Installed": false,
   "IsBetaVersion": false,
-  "Plugins": []
+  "Plugins": [
+    {
+      "Name": "StructUtils",
+      "Enabled": true
+    }
+  ]
 }

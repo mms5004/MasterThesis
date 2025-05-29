@@ -20,7 +20,6 @@ void AAlphaMixerActor::BeginPlay()
         if (SoundHolderSubsystem)
         {
             SoundHolderSubsystem->OnAlphaChanged.AddDynamic(this, &AAlphaMixerActor::OnAlphaUpdated);
-            //SoundHolderSubsystem->SetAlphaInput.AddDynamic(this, &AAlphaMixerActor::EvaluateMixingLogic);
         }
     }
 }
@@ -34,12 +33,12 @@ void AAlphaMixerActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 }
 
-void AAlphaMixerActor::OnAlphaUpdated(FName AlphaName, float AlphaValue)
+void AAlphaMixerActor::OnAlphaUpdated(FString AlphaName, float AlphaValue)
 {
     if (AlphaInputs.Contains(AlphaName))
     {
-        //FInstancedStruct TestStruct = FInstancedStruct::Make(FVector::UpVector);
-        //FInstancedStruct GenericStruct = FInstancedStruct::Make(AlphaValue);
-        //EvaluateMixingLogic(AlphaName, GenericStruct);
+        //auto localStruct = new FMixerFloat;
+        //FInstancedStruct alphaStruct = FInstancedStruct::Make(localStruct);
+        //EvaluateMixingLogic(AlphaName, alphaStruct);
     }
 }

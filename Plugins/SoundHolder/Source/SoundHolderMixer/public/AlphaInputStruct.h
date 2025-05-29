@@ -4,8 +4,16 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AlphaInputStruct.generated.h"
 
+
+USTRUCT()
+struct FMixerBase
+{
+    GENERATED_BODY()
+};
+
+
 USTRUCT(BlueprintType)
-struct FMixerFloat
+struct FMixerFloat : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -13,7 +21,7 @@ struct FMixerFloat
 };
 
 USTRUCT(BlueprintType)
-struct FMixerFloatArray
+struct FMixerFloatArray : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -21,7 +29,7 @@ struct FMixerFloatArray
 };
 
 USTRUCT(BlueprintType)
-struct FMixerInt
+struct FMixerInt : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -29,7 +37,7 @@ struct FMixerInt
 };
 
 USTRUCT(BlueprintType)
-struct FMixerIntArray
+struct FMixerIntArray : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -37,7 +45,7 @@ struct FMixerIntArray
 };
 
 USTRUCT(BlueprintType)
-struct FMixerBool
+struct FMixerBool : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -45,7 +53,7 @@ struct FMixerBool
 };
 
 USTRUCT(BlueprintType)
-struct FMixerBoolArray
+struct FMixerBoolArray : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -53,7 +61,7 @@ struct FMixerBoolArray
 };
 
 USTRUCT(BlueprintType)
-struct FMixerVector
+struct FMixerVector : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -61,7 +69,7 @@ struct FMixerVector
 };
 
 USTRUCT(BlueprintType)
-struct FMixerVectorArray
+struct FMixerVectorArray : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -69,7 +77,7 @@ struct FMixerVectorArray
 };
 
 USTRUCT(BlueprintType)
-struct FMixerRotator
+struct FMixerRotator : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -77,7 +85,7 @@ struct FMixerRotator
 };
 
 USTRUCT(BlueprintType)
-struct FRTPCEnum
+struct FRTPCEnum : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -87,7 +95,7 @@ struct FRTPCEnum
 };
 
 USTRUCT(BlueprintType)
-struct FMixerString
+struct FMixerString : public FMixerBase
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
