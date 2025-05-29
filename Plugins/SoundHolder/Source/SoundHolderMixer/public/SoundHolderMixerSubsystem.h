@@ -42,7 +42,7 @@ public:
     UPROPERTY() // RTPC-like variables
     TObjectPtr<UMixerParameterCollection> MixerParameterCollection;
     
-    UPROPERTY(BlueprintReadWrite, EditAnywhere) //References ? Could be deleted I guess
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
     TMap<FString, float> Alphas;
 
     //////////////////////////////////////////////////////
@@ -50,11 +50,11 @@ public:
     //////////////////////////////////////////////////////
 
     UFUNCTION(BlueprintCallable, Category = "SoundHolderMixer") // Setter
-    void SetAlphaInput(FString Key, FInstancedStruct Value);
+    void SetAlphaInput(FString Name, FInstancedStruct Value);
 
     
     UFUNCTION(BlueprintPure, Category = "SoundHolderMixer") // Getter
-    float GetAlpha(FString Key) const;
+    float GetAlpha(FString Name) const;
 
     // transfer variable in an AI blackboard style
     DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAlphahanged, FString, AlphaName, float, Alpha);
@@ -67,6 +67,4 @@ public:
 
 private: 
     void InstantiateMixerActor(UClass* Class);
-
-    void UpdateMixerParameter(FString Name, float NewValue);
 };

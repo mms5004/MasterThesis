@@ -26,44 +26,50 @@ void USoundHolderMixerSubsystem::OverrideMixerActor(UClass* Class, bool DeleteOl
 
 void USoundHolderMixerSubsystem::OverrideMixerParameterCollection(UMixerParameterCollection* NewCollection)
 {
+    if (!NewCollection || MixerParameterCollection == NewCollection) {return;}
     MixerParameterCollection = NewCollection;
+
+    Alphas.Empty();
+    for (const auto& Elem : MixerParameterCollection->Parameters)
+    {
+        Alphas.Add(Elem.Key, Elem.Value);
+    }
 }
 
-void USoundHolderMixerSubsystem::SetAlphaInput(FString Key, FInstancedStruct Value)
+//Update Alpha if name corresponded and data is valid. In other cases, send data into the mixer actor
+void USoundHolderMixerSubsystem::SetAlphaInput(FString Name, FInstancedStruct Value)
 {
-    float* Found = Alphas.Find(Key); //Detect if key already exist
+    if (!Value.IsValid() || Name == "") {return;} //In case of empty/not valid call
 
-    if (!Value.IsValid() || Key == "") //If empty call are made
-    {return;}
-
-    if (const FMixerFloat* FloatChecker = Value.GetPtr<FMixerFloat>()) // Check if FInstancedStruct is a float
+    float* Found = Alphas.Find(Name); //Detect if key already exist
+    if (Found) 
     {
-        if (Found) 
+        // Check if FInstancedStruct is a FMixerFloat
+        if (const FMixerFloat* FloatChecker = Value.GetPtr<FMixerFloat>())
         {
             if (!FMath::IsNearlyEqual(*Found, FloatChecker->Value))
             {
-                UpdateMixerParameter(Key, FloatChecker->Value);
-
-                //Need to remove this
-                Alphas.Add(Key, FloatChecker->Value);
-                OnAlphaChanged.Broadcast(Key, FloatChecker->Value);
+                *Found = FloatChecker->Value;
+                OnAlphaChanged.Broadcast(Name, FloatChecker->Value);
             }
         }       
     }
-   //Not directly an alpha and need to be send into the mixer actor
-    MixerActor->EvaluateMixingLogic(Key, Value);
+
+    if(MixerActor)
+    MixerActor->EvaluateMixingLogic(Name, Value);
 }
 
-float USoundHolderMixerSubsystem::GetAlpha(FString Key) const
+//Return -1 if parameter not found
+float USoundHolderMixerSubsystem::GetAlpha(FString Name) const
 {
-    const float* Value = Alphas.Find(Key);
-    return Value ? *Value : 0.0f;
+    const float* Value = Alphas.Find(Name);
+    return Value ? *Value : -1.0f;
 }
 
 
 
 
-//Private functions
+//Private function
 
 void USoundHolderMixerSubsystem::InstantiateMixerActor(UClass* Class)
 {
@@ -76,20 +82,4 @@ void USoundHolderMixerSubsystem::InstantiateMixerActor(UClass* Class)
         Params.ObjectFlags = RF_Transient;
         MixerActor = World->SpawnActor<AAlphaMixerActor>(Class, Params);
     }
-}
-
-void USoundHolderMixerSubsystem::UpdateMixerParameter(FString Name, float NewValue)
-{
-    if (MixerParameterCollection)
-    {
-        for (auto& Entry : MixerParameterCollection->Parameters)
-        {
-            if (Entry.ParameterName == Name)
-            {
-                Entry.Value = NewValue;
-                OnAlphaChanged.Broadcast(Name, NewValue);
-                break;
-            }
-        }
-    }    
 }

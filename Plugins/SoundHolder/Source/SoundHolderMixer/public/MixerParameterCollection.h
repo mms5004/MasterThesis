@@ -19,9 +19,10 @@ UCLASS(BlueprintType)
 class UMixerParameterCollection : public UDataAsset
 {
     GENERATED_BODY()
-
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TArray<FMixerAudioParameter> Parameters;
+    FString CollectionName;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TMap<FString, float> Parameters;
 };
