@@ -22,7 +22,7 @@ public:
 	void OnAlphaUpdated(FString Name, float AlphaValue);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "SoundHolderMixer")
-	void EvaluateMixingLogic(FString Name, FInstancedStruct InputValue);
+	void MixingLogic(const FString& Name, FInstancedStruct InputValue);
 
 protected:
 	virtual void BeginPlay() override;

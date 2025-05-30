@@ -13,7 +13,7 @@
 /**
  * Transfer data from actor to mixer actor and static alphas to actors
  */
-UCLASS()
+UCLASS(config = Game, defaultconfig)
 class SOUNDHOLDERMIXER_API USoundHolderMixerSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
@@ -42,8 +42,8 @@ public:
     UPROPERTY() // RTPC-like variables
     TObjectPtr<UMixerParameterCollection> MixerParameterCollection;
     
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    TMap<FString, float> Alphas;
+    //UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    //TMap<FString, float> Alphas;
 
     //////////////////////////////////////////////////////
     // Get/Set Mixer Values
@@ -54,7 +54,7 @@ public:
 
     
     UFUNCTION(BlueprintPure, Category = "SoundHolderMixer") // Getter
-    float GetAlpha(FString Name) const;
+    float GetAlpha(FString Name, float DefaultValue) const;
 
     // transfer variable in an AI blackboard style
     DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAlphahanged, FString, AlphaName, float, Alpha);

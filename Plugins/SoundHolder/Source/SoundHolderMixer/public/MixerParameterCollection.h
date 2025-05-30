@@ -1,22 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AlphaParameters.h"
 #include "MixerParameterCollection.generated.h"
 
-USTRUCT(BlueprintType)
-struct FMixerAudioParameter
-{
-    GENERATED_BODY()
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FString ParameterName;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float Value = 0.0f;
-};
-
-UCLASS(BlueprintType)
-class UMixerParameterCollection : public UDataAsset
+UCLASS(Blueprintable, BlueprintType)
+class UMixerParameterCollection : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 public:

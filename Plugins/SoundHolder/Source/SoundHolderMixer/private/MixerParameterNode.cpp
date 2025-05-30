@@ -14,6 +14,16 @@
 #include "MetasoundFacade.h"				 // FNodeFacade class, eliminates the need for a fair amount of boilerplate code
 #include "MetasoundParamHelper.h"            // METASOUND_PARAM and METASOUND_GET_PARAM family of macros
 
+#include "Misc/ScopeLock.h"
+#include "AlphaParameters.h"
+//TMap<FString, float> FAlphaParameters::AlphaMap;
+//FCriticalSection FAlphaParameters::Mutex;
+
+
+//Couldn't do it without :
+//https://dev.epicgames.com/community/learning/tutorials/ry7p/unreal-engine-creating-metasound-nodes-in-c-quickstart
+//https://github.com/gtreshchev/RuntimeAudioImporter/blob/main/Source/RuntimeAudioImporter/Private/MetaSound/MetasoundImportedWaveToWaveAssetNode.cpp
+//Also metasound need to be called in module's plugin to register nodes
 
 namespace Metasound
 {
@@ -25,6 +35,7 @@ namespace Metasound
 	namespace MixerParameterNodeNames
 	{
 		METASOUND_PARAM(InputAValue, "A", "Alpha name");
+		METASOUND_PARAM(InputBValue, "B", "Default value");
 		METASOUND_PARAM(OutputValue, "Get Alpha Value", "Return 0 if not found");
 	}
 
@@ -35,8 +46,8 @@ namespace Metasound
 	public:
 		// Constructor
 		FMixerParameterOperator(
-			const FStringReadRef& InAValue)
-			: InputA(InAValue)
+			const FStringReadRef& InAValue, const FFloatReadRef& InBValue)
+			: InputA(InAValue), DefaultValue(InBValue)
 			, MixerParameterOutput(FFloatWriteRef::CreateNew(0.0f))
 		{
 		}
@@ -46,8 +57,12 @@ namespace Metasound
 		{
 			using namespace MixerParameterNodeNames;
 
-			static const FVertexInterface Interface(
-				FInputVertexInterface(TInputDataVertex<FString>(METASOUND_GET_PARAM_NAME_AND_METADATA(InputAValue))	),
+			static const FVertexInterface Interface
+			(
+				FInputVertexInterface(
+												TInputDataVertex<FString>(METASOUND_GET_PARAM_NAME_AND_METADATA(InputAValue)),
+												TInputDataVertex<float>(METASOUND_GET_PARAM_NAME_AND_METADATA(InputBValue))
+											 ),	
 				FOutputVertexInterface(	TOutputDataVertex<float>(METASOUND_GET_PARAM_NAME_AND_METADATA(OutputValue)) )
 			);
 			return Interface;
@@ -97,6 +112,7 @@ namespace Metasound
 			FDataReferenceCollection InputDataReferences;
 
 			InputDataReferences.AddDataReadReference(METASOUND_GET_PARAM_NAME(InputAValue), InputA);
+			InputDataReferences.AddDataReadReference(METASOUND_GET_PARAM_NAME(InputBValue), DefaultValue);
 
 			return InputDataReferences;
 		}
@@ -113,8 +129,7 @@ namespace Metasound
 			return OutputDataReferences;
 		}
 
-		// Used to instantiate a new runtime instance of your node
-
+		// Used to instantiate the runtime instance node
 #if UE_VERSION_OLDER_THAN(5, 4, 0)
 		static TUniquePtr<IOperator> CreateOperator(const Metasound::FCreateOperatorParams& InParams, Metasound::FBuildErrorArray& OutErrors)
 		{
@@ -123,8 +138,9 @@ namespace Metasound
 			const FDataReferenceCollection& InputDataRefs = InParams.InputDataReferences;
 
 			FStringReadRef InputA = InputDataRefs.GetDataReadReferenceOrConstruct<FString>(METASOUND_GET_PARAM_NAME(InputAValue));
+			FFloatReadRef InputA = InputDataRefs.GetDataReadReferenceOrConstruct<floatf>(METASOUND_GET_PARAM_NAME(InputBValue));
 
-			return MakeUnique<FMixerParameterOperator>(InputA);
+			return MakeUnique<FMixerParameterOperator>(InputA, InputB);
 		}
 #else
 		static TUniquePtr<IOperator> CreateOperator(const Metasound::FBuildOperatorParams& InParams, Metasound::FBuildResults& OutResults)
@@ -134,22 +150,23 @@ namespace Metasound
 			const FInputVertexInterfaceData& InputDataRefs = InParams.InputData;
 
 			FStringReadRef InputA = InputDataRefs.GetOrCreateDefaultDataReadReference<FString>(METASOUND_GET_PARAM_NAME(InputAValue), InParams.OperatorSettings);
+			FFloatReadRef InputB = InputDataRefs.GetOrCreateDefaultDataReadReference<float>(METASOUND_GET_PARAM_NAME(InputBValue), InParams.OperatorSettings);
 
-			return MakeUnique<FMixerParameterOperator>(InputA);
+			return MakeUnique<FMixerParameterOperator>(InputA, InputB);
 		}
 #endif
 
 
-		// Primary node functionality
 		void Execute()
 		{
-			*MixerParameterOutput = 0;
+			*MixerParameterOutput = FAlphaParameters::Get(*InputA, *DefaultValue);
 		}
 
 	private:
 
 		// Inputs
 		FStringReadRef InputA;
+		FFloatReadRef DefaultValue;
 
 		// Outputs
 		FFloatWriteRef MixerParameterOutput;

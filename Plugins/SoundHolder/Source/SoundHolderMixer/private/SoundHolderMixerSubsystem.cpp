@@ -1,18 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SoundHolderMixerSubsystem.h"
-
+#include "SubsystemSettings.h"
+#include "AlphaParameters.h"
+TMap<FString, float> FAlphaParameters::AlphaMap;
+FCriticalSection FAlphaParameters::Mutex;
 
 void USoundHolderMixerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     UE_LOG(LogTemp, Log, TEXT("Sound Holder Mixer Subsystem initialized"));
 
-    InstantiateMixerActor(AAlphaMixerActor::StaticClass());   
+    InstantiateMixerActor(AAlphaMixerActor::StaticClass()); 
 }
 
 void USoundHolderMixerSubsystem::Deinitialize()
 {
-    Alphas.Empty();
+    FAlphaParameters::AlphaMap.Empty();
 }
 
 void USoundHolderMixerSubsystem::OverrideMixerActor(UClass* Class, bool DeleteOlderMixer)
@@ -29,10 +32,10 @@ void USoundHolderMixerSubsystem::OverrideMixerParameterCollection(UMixerParamete
     if (!NewCollection || MixerParameterCollection == NewCollection) {return;}
     MixerParameterCollection = NewCollection;
 
-    Alphas.Empty();
+    FAlphaParameters::AlphaMap.Empty();
     for (const auto& Elem : MixerParameterCollection->Parameters)
     {
-        Alphas.Add(Elem.Key, Elem.Value);
+        FAlphaParameters::Add(Elem.Key, Elem.Value);
     }
 }
 
@@ -41,8 +44,8 @@ void USoundHolderMixerSubsystem::SetAlphaInput(FString Name, FInstancedStruct Va
 {
     if (!Value.IsValid() || Name == "") {return;} //In case of empty/not valid call
 
-    float* Found = Alphas.Find(Name); //Detect if key already exist
-    if (Found) 
+    float* Found = FAlphaParameters::AlphaMap.Find(Name); //Detect if key already exist
+    if (Found)
     {
         // Check if FInstancedStruct is a FMixerFloat
         if (const FMixerFloat* FloatChecker = Value.GetPtr<FMixerFloat>())
@@ -56,14 +59,15 @@ void USoundHolderMixerSubsystem::SetAlphaInput(FString Name, FInstancedStruct Va
     }
 
     if(MixerActor)
-    MixerActor->EvaluateMixingLogic(Name, Value);
+    MixerActor->MixingLogic(Name, Value);
 }
 
-//Return -1 if parameter not found
-float USoundHolderMixerSubsystem::GetAlpha(FString Name) const
+//Return default value if parameter not found
+float USoundHolderMixerSubsystem::GetAlpha(FString Name, float DefaultValue) const
 {
-    const float* Value = Alphas.Find(Name);
-    return Value ? *Value : -1.0f;
+    return FAlphaParameters::Get(Name, DefaultValue);
+    //const float* Value = FAlphaParameters::AlphaMap.Find(Name);
+    //return Value ? *Value : -1.0f;
 }
 
 
