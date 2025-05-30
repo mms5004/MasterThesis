@@ -1,0 +1,165 @@
+// Include to access the TExecutableOperator class
+
+#include "Misc/EngineVersionComparison.h"
+
+#include "MetasoundDataReference.h"
+#include "CoreMinimal.h"
+#include "Internationalization/Text.h"
+#include "MetasoundDataTypeRegistrationMacro.h"
+#include "MetasoundVertex.h"
+#include "MetasoundExecutableOperator.h"     // TExecutableOperator class
+#include "MetasoundPrimitives.h"             // ReadRef and WriteRef descriptions for bool, int32, float, and string
+#include "MetasoundNodeRegistrationMacro.h"  // METASOUND_LOCTEXT and METASOUND_REGISTER_NODE macros
+#include "MetasoundStandardNodesNames.h"     // StandardNodes namespace
+#include "MetasoundFacade.h"				 // FNodeFacade class, eliminates the need for a fair amount of boilerplate code
+#include "MetasoundParamHelper.h"            // METASOUND_PARAM and METASOUND_GET_PARAM family of macros
+
+
+namespace Metasound
+{
+	// Required for ensuring the node is supported by all languages in engine. Must be unique per MetaSound.
+	#define LOCTEXT_NAMESPACE "MetasoundStandardNodes_MetaSoundMixerParameterNode"
+
+
+	// Vertex Names - define your node's inputs and outputs here
+	namespace MixerParameterNodeNames
+	{
+		METASOUND_PARAM(InputAValue, "A", "Alpha name");
+		METASOUND_PARAM(OutputValue, "Get Alpha Value", "Return 0 if not found");
+	}
+
+
+	// Operator Class - defines the way your node is described, created and executed
+	class FMixerParameterOperator : public TExecutableOperator<FMixerParameterOperator>
+	{
+	public:
+		// Constructor
+		FMixerParameterOperator(
+			const FStringReadRef& InAValue)
+			: InputA(InAValue)
+			, MixerParameterOutput(FFloatWriteRef::CreateNew(0.0f))
+		{
+		}
+
+		// Helper function for constructing vertex interface
+		static const FVertexInterface& DeclareVertexInterface()
+		{
+			using namespace MixerParameterNodeNames;
+
+			static const FVertexInterface Interface(
+				FInputVertexInterface(TInputDataVertex<FString>(METASOUND_GET_PARAM_NAME_AND_METADATA(InputAValue))	),
+				FOutputVertexInterface(	TOutputDataVertex<float>(METASOUND_GET_PARAM_NAME_AND_METADATA(OutputValue)) )
+			);
+			return Interface;
+		}
+
+		// Retrieves necessary metadata about your node
+		static const FNodeClassMetadata& GetNodeInfo()
+		{
+			auto CreateNodeClassMetadata = []() -> FNodeClassMetadata
+				{
+					FVertexInterface NodeInterface = DeclareVertexInterface();
+
+					FNodeClassMetadata Metadata
+					{
+						FNodeClassName { "Custom", "Mixer Parameter Node", StandardNodes::AudioVariant },
+						1, // Major Version
+						0, // Minor Version
+						METASOUND_LOCTEXT("TutorialNodeDisplayName", "Mixer Parameter Node"),
+						METASOUND_LOCTEXT("TutorialNodeDesc", "Gets the corresponding alpha from mixer"),
+						PluginAuthor,
+						PluginNodeMissingPrompt,
+						NodeInterface,
+						{ }, // Category Hierarchy 
+						{ }, // Keywords for searching
+						FNodeDisplayStyle{}
+					};
+
+					return Metadata;
+				};
+
+			static const FNodeClassMetadata Metadata = CreateNodeClassMetadata();
+			return Metadata;
+		}
+
+		// Allows MetaSound graph to interact with your node's inputs
+		virtual FDataReferenceCollection GetInputs() const override
+		{
+			using namespace MixerParameterNodeNames;
+
+			FDataReferenceCollection InputDataReferences;
+
+			InputDataReferences.AddDataReadReference(METASOUND_GET_PARAM_NAME(InputAValue), InputA);
+
+			return InputDataReferences;
+		}
+
+		// Allows MetaSound graph to interact with your node's outputs
+		virtual FDataReferenceCollection GetOutputs() const override
+		{
+			using namespace MixerParameterNodeNames;
+
+			FDataReferenceCollection OutputDataReferences;
+
+			OutputDataReferences.AddDataReadReference(METASOUND_GET_PARAM_NAME(OutputValue), MixerParameterOutput);
+
+			return OutputDataReferences;
+		}
+
+		// Used to instantiate a new runtime instance of your node
+
+#if UE_VERSION_OLDER_THAN(5, 4, 0)
+		static TUniquePtr<IOperator> CreateOperator(const Metasound::FCreateOperatorParams& InParams, Metasound::FBuildErrorArray& OutErrors)
+		{
+			using namespace MixerParameterNodeNames;
+
+			const FDataReferenceCollection& InputDataRefs = InParams.InputDataReferences;
+
+			FStringReadRef InputA = InputDataRefs.GetDataReadReferenceOrConstruct<FString>(METASOUND_GET_PARAM_NAME(InputAValue));
+
+			return MakeUnique<FMixerParameterOperator>(InputA);
+		}
+#else
+		static TUniquePtr<IOperator> CreateOperator(const Metasound::FBuildOperatorParams& InParams, Metasound::FBuildResults& OutResults)
+		{
+			using namespace MixerParameterNodeNames;
+
+			const FInputVertexInterfaceData& InputDataRefs = InParams.InputData;
+
+			FStringReadRef InputA = InputDataRefs.GetOrCreateDefaultDataReadReference<FString>(METASOUND_GET_PARAM_NAME(InputAValue), InParams.OperatorSettings);
+
+			return MakeUnique<FMixerParameterOperator>(InputA);
+		}
+#endif
+
+
+		// Primary node functionality
+		void Execute()
+		{
+			*MixerParameterOutput = 0;
+		}
+
+	private:
+
+		// Inputs
+		FStringReadRef InputA;
+
+		// Outputs
+		FFloatWriteRef MixerParameterOutput;
+	};
+
+	// Node Class - Inheriting from FNodeFacade is recommended for nodes that have a static FVertexInterface
+	class FMixerParameterNode : public FNodeFacade
+	{
+	public:
+		FMixerParameterNode(const FNodeInitData& InitData)
+			: FNodeFacade(InitData.InstanceName, InitData.InstanceID, TFacadeOperatorClass<FMixerParameterOperator>())
+		{
+		}
+	};
+
+	// Register node
+	METASOUND_REGISTER_NODE(FMixerParameterNode);
+}
+
+#undef LOCTEXT_NAMESPACE

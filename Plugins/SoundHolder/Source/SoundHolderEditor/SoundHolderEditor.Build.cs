@@ -31,7 +31,8 @@ public class SoundHolderEditor: ModuleRules
             "EditorInteractiveToolsFramework",
             "UMGEditor",
             "UMG",
-            "Blutility"
+            "Blutility",
+            "MetasoundEngine"
         }
         );
     }
