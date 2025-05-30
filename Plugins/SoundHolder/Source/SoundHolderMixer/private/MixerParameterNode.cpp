@@ -60,18 +60,25 @@ namespace Metasound
 				{
 					FVertexInterface NodeInterface = DeclareVertexInterface();
 
+					FText CategoryOne = FText::FromString("Mixer");
+					FText CategoryTwo = FText::FromString("Parameter");
+
+					FText KeywordOne = FText::FromString("Alpha");
+					FText KeywordTwo = FText::FromString("RTPC");
+
+
 					FNodeClassMetadata Metadata
 					{
-						FNodeClassName { "Custom", "Mixer Parameter Node", StandardNodes::AudioVariant },
-						1, // Major Version
-						0, // Minor Version
-						METASOUND_LOCTEXT("TutorialNodeDisplayName", "Mixer Parameter Node"),
-						METASOUND_LOCTEXT("TutorialNodeDesc", "Gets the corresponding alpha from mixer"),
+						FNodeClassName { TEXT("UE"), TEXT("Mixer Parameter Node"), TEXT("Audio")},
+						1,
+						0,
+						METASOUND_LOCTEXT("NodeDisplayName", "Mixer Parameter Node"),
+						METASOUND_LOCTEXT("NodeDescription", "Return an alpha parameter from mixer"),
 						PluginAuthor,
 						PluginNodeMissingPrompt,
 						NodeInterface,
-						{ }, // Category Hierarchy 
-						{ }, // Keywords for searching
+						{CategoryOne,CategoryTwo}, // Category Hierarchy 
+						{KeywordOne, KeywordTwo}, // Keywords for searching
 						FNodeDisplayStyle{}
 					};
 

@@ -19,10 +19,10 @@ public:
 
 	//Separation of alpha update and input update 
 	UFUNCTION()
-	void OnAlphaUpdated(FString AlphaName, float AlphaValue);
+	void OnAlphaUpdated(FString Name, float AlphaValue);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "SoundHolderMixer")
-	void EvaluateMixingLogic(FString InputName, FInstancedStruct InputValue);
+	void EvaluateMixingLogic(FString Name, FInstancedStruct InputValue);
 
 protected:
 	virtual void BeginPlay() override;
