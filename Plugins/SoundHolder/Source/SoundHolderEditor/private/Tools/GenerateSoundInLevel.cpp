@@ -44,7 +44,7 @@ void UGenerateSoundInLevel::SetupWidgetBlueprint()
 {
 	if (WidgetInstance)	{return;}
 
-	// /Get the Blueprint, add suffix _C to get the class  //UE_LOG(LogTemp, Warning, TEXT("EUW_SoundGeneration Setup"))
+	// /Get the Blueprint, suffix _C to get the class  //UE_LOG(LogTemp, Warning, TEXT("EUW_SoundGeneration Setup"))
 	FSoftObjectPath WidgetPath;	WidgetPath.SetPath("/SoundHolder/Tools/EUW_SoundGeneration.EUW_SoundGeneration");
 
 	UEditorUtilityWidgetBlueprint* WidgetBP = Cast<UEditorUtilityWidgetBlueprint>(
@@ -179,9 +179,10 @@ void UGenerateSoundInLevel::OnPropertyModified(UObject* PropertySet, FProperty* 
 
 void UGenerateSoundInLevel::Render(IToolsContextRenderAPI* RenderAPI)
 {
-	FPrimitiveDrawInterface* PDI = RenderAPI->GetPrimitiveDrawInterface();
-	// draw a thin line that shows through objects
+	//FPrimitiveDrawInterface* PDI = RenderAPI->GetPrimitiveDrawInterface();
+	
 	/*
+	// draw a thin line that shows through objects
 	PDI->DrawLine(Properties->StartPoint, Properties->EndPoint,
 		FColor(240, 16, 16), SDPG_Foreground, 2.0f, 0.0f, true);
 	// draw a thicker line that is depth-tested
