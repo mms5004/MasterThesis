@@ -44,47 +44,34 @@ void UGenerateSoundInLevel::SetupWidgetBlueprint()
 {
 	if (WidgetInstance)	{return;}
 
-	// initialize widget utility  //UE_LOG(LogTemp, Warning, TEXT("Setup?"))
-	FSoftObjectPath WidgetPath;	WidgetPath.SetPath("/SoundHolder/Tools/EUW_SoundGeneration.EUW_SoundGeneration_C");
+	// /Get the Blueprint, add suffix _C to get the class  //UE_LOG(LogTemp, Warning, TEXT("EUW_SoundGeneration Setup"))
+	FSoftObjectPath WidgetPath;	WidgetPath.SetPath("/SoundHolder/Tools/EUW_SoundGeneration.EUW_SoundGeneration");
 
-	//UEditorUtilityWidgetBlueprint* WidgetBP = Cast<UEditorUtilityWidgetBlueprint>(StaticLoadObject(UEditorUtilityWidgetBlueprint::StaticClass(), nullptr, *WidgetPath.ToString())); //Removing the _C to load blueprint
-	UClass* WidgetClass = Cast<UClass>(StaticLoadObject(UClass::StaticClass(), nullptr, *WidgetPath.ToString()));
-	if (WidgetClass && GEditor)
+	UEditorUtilityWidgetBlueprint* WidgetBP = Cast<UEditorUtilityWidgetBlueprint>(
+		StaticLoadObject(UEditorUtilityWidgetBlueprint::StaticClass(), nullptr, *WidgetPath.ToString()));
+
+	if (WidgetBP && GEditor)
 	{
-		//if (UEditorUtilitySubsystem* EditorUtilitySubsystem = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>())
-		//{
-		//	EditorUtilitySubsystem->SpawnAndRegisterTab(WidgetBP);
-		//}
-		if (UWorld* World = GEditor->GetEditorWorldContext().World())
-		{
-			WidgetInstance = CreateWidget<UEUW_SoundGeneration>(World, WidgetClass);
-			if (WidgetInstance)
+		if (UEditorUtilitySubsystem* EditorUtilitySubsystem = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>())
+		{			
+			FName id = "EditorSoundGeneration";
+			UEditorUtilityWidget* widgetBlueprint = EditorUtilitySubsystem->SpawnAndRegisterTabAndGetID(WidgetBP,id);
+			if(widgetBlueprint)
 			{
-				TSharedRef<SWindow> WidgetWindow = SNew(SWindow)
-					.Title(FText::FromString("Sound Tool"))
-					.ClientSize(FVector2D(500, 400))
-					.SupportsMinimize(true)
-					.SupportsMaximize(false);
-
-				TSharedRef<SWidget> SlateWidget = WidgetInstance->TakeWidget();
-
-				WidgetWindow->SetContent(SlateWidget);
-
-				FSlateApplication::Get().AddWindow(WidgetWindow);
-
+				WidgetInstance = Cast<UEUW_SoundGeneration>(widgetBlueprint);
 				if (IsValid(ComponentHit))
 				{
 					WidgetInstance->SetupParameters(Properties->Suffix, ComponentHit);
-
 				}
-			}
+			}	
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("widget error ! "))
+				UE_LOG(LogTemp, Warning, TEXT("widget error !"))
 			}
-		}
-	}
-	else {
+		}		
+	}	
+	else 
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Utility renamed/moved or deleted ! "))
 	}
 }
