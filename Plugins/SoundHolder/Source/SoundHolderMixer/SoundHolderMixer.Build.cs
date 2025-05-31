@@ -10,7 +10,7 @@ public class SoundHolderMixer: ModuleRules
             "MetasoundFrontend",
             "MetasoundEngine",
             "MetasoundGraphCore",
-            "MetasoundStandardNodes"
+            "MetasoundStandardNodes", 
         });
     }
 }

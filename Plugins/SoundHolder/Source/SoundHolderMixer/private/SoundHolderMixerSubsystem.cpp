@@ -10,7 +10,17 @@ void USoundHolderMixerSubsystem::Initialize(FSubsystemCollectionBase& Collection
 {
     UE_LOG(LogTemp, Log, TEXT("Sound Holder Mixer Subsystem initialized"));
 
-    InstantiateMixerActor(AAlphaMixerActor::StaticClass()); 
+    //Get default value
+    const UBlueprintSubsystemSettings* Settings = GetDefault<UBlueprintSubsystemSettings>();
+
+    if (TSubclassOf<AAlphaMixerActor> DefaultMixer = Settings->DefaultMixerActor)
+    {
+        InstantiateMixerActor(DefaultMixer);
+    }
+    if (TSoftObjectPtr<UMixerParameterCollection> DefaultParameterCollection = Settings->DefaultMixerParameterCollection) 
+    {
+        OverrideMixerParameterCollection(DefaultParameterCollection.LoadSynchronous());
+    }
 }
 
 void USoundHolderMixerSubsystem::Deinitialize()
