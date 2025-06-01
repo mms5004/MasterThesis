@@ -4,16 +4,10 @@
 #include "EUW_SoundGeneration.h"
 
 
-void UEUW_SoundGeneration::SetupParameters(FString suffix, UPrimitiveComponent* selectedComponent)
+void UEUW_SoundGeneration::SetupParameters(UPrimitiveComponent* selectedComponent)
 {
-	bool suffixChanged = false;
 	bool componentChanged = false;
 
-	if (Suffix != suffix) 
-	{
-		suffixChanged = true;
-		Suffix = suffix;
-	}
 
 	if (SelectedComponent != selectedComponent)
 	{
@@ -21,25 +15,8 @@ void UEUW_SoundGeneration::SetupParameters(FString suffix, UPrimitiveComponent* 
 		SelectedComponent = selectedComponent;
 	}
 
-	if (suffixChanged || componentChanged) 
+	if (componentChanged)
 	{
-		ParametersUpdated(suffixChanged, componentChanged);
+		ParametersUpdated(componentChanged);
 	}
-
-	//To test, not sure it's secure 
-	/*
-	ParametersUpdated(
-		(Suffix != suffix)? suffix = Suffix : false,
-		false
-	);*/
-}
-
-void UEUW_SoundGeneration::ChangeSuffix(FString suffix)
-{
-	
-}
-
-void UEUW_SoundGeneration::GetAllReferences(FString suffix)
-{
-	
 }

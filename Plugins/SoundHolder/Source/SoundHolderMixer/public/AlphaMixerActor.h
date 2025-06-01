@@ -17,7 +17,7 @@ class SOUNDHOLDERMIXER_API AAlphaMixerActor : public AActor
 public:	
 	AAlphaMixerActor();
 
-	//Separation of alpha update and input update 
+
 	UFUNCTION()
 	void OnAlphaUpdated(FString Name, float AlphaValue);
 
@@ -39,5 +39,4 @@ protected:
 
 private:
 	USoundHolderMixerSubsystem* SoundHolderSubsystem;
-
 };

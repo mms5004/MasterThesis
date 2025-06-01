@@ -49,7 +49,9 @@ void USoundHolderMixerSubsystem::OverrideMixerParameterCollection(UMixerParamete
     }
 }
 
-//Update Alpha if name corresponded and data is valid. In other cases, send data into the mixer actor
+
+
+//Update Alpha if name correspond and data is valid. In other cases, send data into the mixer actor
 void USoundHolderMixerSubsystem::SetAlphaInput(FString Name, FInstancedStruct Value)
 {
     if (!Value.IsValid() || Name == "") {return;} //In case of empty/not valid call
@@ -76,20 +78,15 @@ void USoundHolderMixerSubsystem::SetAlphaInput(FString Name, FInstancedStruct Va
 float USoundHolderMixerSubsystem::GetAlpha(FString Name, float DefaultValue) const
 {
     return FAlphaParameters::Get(Name, DefaultValue);
-    //const float* Value = FAlphaParameters::AlphaMap.Find(Name);
-    //return Value ? *Value : -1.0f;
 }
 
 
-
-
 //Private function
-
 void USoundHolderMixerSubsystem::InstantiateMixerActor(UClass* Class)
 {
     if (!Class) {return;}
     UWorld* World = GetWorld();
-    if (World) //MixerActor = World->SpawnActor<AAlphaMixerActor>();
+    if (World)
     {        
         FActorSpawnParameters Params;
         Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;

@@ -211,6 +211,6 @@ namespace Metasound
 
 		virtual ~TValueNode() = default;
 	};
-} // namespace Metasound
+}
 
 #undef LOCTEXT_NAMESPACE

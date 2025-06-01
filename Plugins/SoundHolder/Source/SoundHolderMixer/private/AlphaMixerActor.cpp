@@ -4,6 +4,9 @@
 #include "AlphaMixerActor.h"
 #include "SoundHolderMixerSubsystem.h"
 
+//Need to refactor : OnAlphaUpdated isn't as usefull as before, alpha is send with "MixingLogic" function
+//The logic could be separated for performance
+
 // Sets default values
 AAlphaMixerActor::AAlphaMixerActor()
 {

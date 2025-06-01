@@ -5,6 +5,9 @@
 //#include "Modules/ModuleInterface.h"
 
 // Module definition for the editor mode
+/*
+*	This Module was created with the Epic Game EditorMode Template
+*/
 class FSoundHolderEditor : public FDefaultModuleImpl
 {
 public:

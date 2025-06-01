@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "Misc/ScopeLock.h" //For multithread, I'm not sure if metasound is thread safe
 
+//Epic Games Mutex exemple was used to build this class
+
 class  FAlphaParameters
 {
     //Allow subsystem to edit private variables

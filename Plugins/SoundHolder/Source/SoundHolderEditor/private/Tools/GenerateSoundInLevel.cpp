@@ -61,7 +61,7 @@ void UGenerateSoundInLevel::SetupWidgetBlueprint()
 				WidgetInstance = Cast<UEUW_SoundGeneration>(widgetBlueprint);
 				if (IsValid(ComponentHit))
 				{
-					WidgetInstance->SetupParameters(Properties->Suffix, ComponentHit);
+					WidgetInstance->SetupParameters(ComponentHit);
 				}
 			}	
 			else
@@ -150,7 +150,7 @@ FInputRayHit UGenerateSoundInLevel::FindRayHit(const FRay& WorldRay, FVector& Hi
 		ComponentHit = Result.GetComponent();
 		if (IsValid(WidgetInstance))
 		{
-			WidgetInstance->SetupParameters(Properties->Suffix, ComponentHit);
+			WidgetInstance->SetupParameters(ComponentHit);
 
 		}
 		HitPos = Result.ImpactPoint; 

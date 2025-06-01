@@ -39,11 +39,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "SoundHolderMixer")
     void OverrideMixerParameterCollection(UMixerParameterCollection* NewCollection);
 
-    UPROPERTY() // RTPC-like variables
+    UPROPERTY() // RTPC-like variables, the runtime values are stocked in a static class called in cpp
     TObjectPtr<UMixerParameterCollection> MixerParameterCollection;
-    
-    //UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    //TMap<FString, float> Alphas;
 
     //////////////////////////////////////////////////////
     // Get/Set Mixer Values
@@ -61,10 +58,8 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "SoundHolderMixer")
     FOnAlphahanged OnAlphaChanged;
 
-    //////////////////////////////////////////////////////
-    // Update and setup
-    //////////////////////////////////////////////////////
 
+    // Update and setup
 private: 
     void InstantiateMixerActor(UClass* Class);
 };

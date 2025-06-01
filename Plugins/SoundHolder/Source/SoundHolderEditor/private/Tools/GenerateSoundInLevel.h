@@ -38,10 +38,6 @@ public:
 	/** Selected coordonates */
 	UPROPERTY(EditAnywhere, Category = Options)
 	FVector SelectionCoordonate;
-
-	/** Selected class in editor */
-	UPROPERTY(EditAnywhere, Category = Options)
-	FString Suffix;
 };
 
 

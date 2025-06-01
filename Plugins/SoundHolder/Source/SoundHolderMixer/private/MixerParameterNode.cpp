@@ -16,14 +16,12 @@
 
 #include "Misc/ScopeLock.h"
 #include "AlphaParameters.h"
-//TMap<FString, float> FAlphaParameters::AlphaMap;
-//FCriticalSection FAlphaParameters::Mutex;
 
 
 //Couldn't do it without :
 //https://dev.epicgames.com/community/learning/tutorials/ry7p/unreal-engine-creating-metasound-nodes-in-c-quickstart
 //https://github.com/gtreshchev/RuntimeAudioImporter/blob/main/Source/RuntimeAudioImporter/Private/MetaSound/MetasoundImportedWaveToWaveAssetNode.cpp
-//Also metasound need to be called in module's plugin to register nodes
+//Also metasound need to be called in module's initialize to register this nodes
 
 namespace Metasound
 {
