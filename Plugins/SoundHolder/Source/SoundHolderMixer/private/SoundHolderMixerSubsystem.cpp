@@ -3,6 +3,7 @@
 #include "SoundHolderMixerSubsystem.h"
 #include "SubsystemSettings.h"
 #include "AlphaParameters.h"
+#include "Engine/World.h" // for to be compile in package plugin : FActorSpawnParameters
 TMap<FString, float> FAlphaParameters::AlphaMap;
 FCriticalSection FAlphaParameters::Mutex;
 

@@ -9,9 +9,9 @@ struct FMixerAlpha
 {
 	GENERATED_BODY()
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mixer")
     FString Name;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mixer")
     float Value;
 };
 
@@ -27,35 +27,3 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Mixer Utility", meta = (Keywords = "Get Alphas", OutParm = "OutputAlpha"))
     static void GetAlphas(TArray<FMixerAlpha>& OutputAlpha);
 };
-
-inline bool UFLMixerFunction::GetSubsystem(USoundHolderMixerSubsystem*& MixerSubsystem)
-{
-    for (const FWorldContext& Context : GEngine->GetWorldContexts())
-    {
-        if (UWorld * World = Context.World()) //Could compare the mode too : Context.WorldType == EWorldType::PIE 
-        {
-            if (auto* instance = World->GetGameInstance()) 
-            {
-                MixerSubsystem = instance->GetSubsystem<USoundHolderMixerSubsystem>();
-                if (MixerSubsystem) 
-                {
-                    return true;
-                }
-            }
-        }
-    }
-	return false;
-}
-
-inline void UFLMixerFunction::GetAlphas(TArray<FMixerAlpha>& OutputAlpha)
-{
-    const TMap<FString, float>& Parameters = FAlphaParameters::GetAlphaMap();
-
-    FMixerAlpha localAlpha;
-    for (auto& item : Parameters)
-    {
-        localAlpha.Name = item.Key;
-        localAlpha.Value = item.Value;
-        OutputAlpha.Add(localAlpha);
-    }
-}

@@ -29,7 +29,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "SoundHolderMixer")
     void OverrideMixerActor(UClass* Class, bool DeleteOlderMixer);
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SoundHolderMixer")
     AAlphaMixerActor* MixerActor;
 
     //////////////////////////////////////////////////////

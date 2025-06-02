@@ -3,6 +3,7 @@
 
 #include "AlphaMixerActor.h"
 #include "SoundHolderMixerSubsystem.h"
+#include "Engine/GameInstance.h"
 
 //Need to refactor : OnAlphaUpdated isn't as usefull as before, alpha is send with "MixingLogic" function
 //The logic could be separated for performance
